@@ -1,6 +1,5 @@
+// Import necessary modules
 const { createFilePath } = require('gatsby-source-filesystem');
-// TODO: ideally we'd remove lodash and just use lodash-es, but we can't require
-// es modules here.
 const uniq = require('lodash/uniq');
 const MonacoWebpackPlugin = require('monaco-editor-webpack-plugin');
 const webpack = require('webpack');
@@ -17,6 +16,7 @@ const createByIdentityMap = {
   superBlockIntroMarkdown: createSuperBlockIntroPages
 };
 
+// This function runs whenever a new node is created in Gatsby
 exports.onCreateNode = function onCreateNode({ node, actions, getNode }) {
   const { createNodeField } = actions;
 
@@ -32,8 +32,10 @@ exports.onCreateNode = function onCreateNode({ node, actions, getNode }) {
   }
 };
 
+// This function is responsible for generating pages
 exports.createPages = function createPages({ graphql, actions, reporter }) {
   if (!env.algoliaAPIKey || !env.algoliaAppId) {
+    // Check for Algolia API key and App ID
     if (process.env.FREECODECAMP_NODE_ENV === 'production') {
       throw new Error(
         'Algolia App id and API key are required to start the client!'
@@ -46,6 +48,7 @@ exports.createPages = function createPages({ graphql, actions, reporter }) {
   }
 
   if (!env.stripePublicKey) {
+    // Check for Stripe public key
     if (process.env.FREECODECAMP_NODE_ENV === 'production') {
       throw new Error('Stripe public key is required to start the client!');
     } else {
@@ -172,7 +175,6 @@ exports.createPages = function createPages({ graphql, actions, reporter }) {
         );
 
         // Create intro pages
-        // TODO: Remove allMarkdownRemark (populate from elsewhere)
         result.data.allMarkdownRemark.edges.forEach(edge => {
           const {
             node: { frontmatter, fields }
